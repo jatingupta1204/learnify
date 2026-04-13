@@ -8,15 +8,33 @@ import { User } from "../models/user.model.js";
 
 // initialize razorpay
 let razorpay;
-try {
+const getRazorpayClient = () => {
+  if (razorpay) return razorpay;
+
+  const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
+  if (!RAZORPAY_ID_KEY || !RAZORPAY_SECRET_KEY) {
+    throw new Error(
+      "Razorpay is not configured. Set RAZORPAY_ID_KEY and RAZORPAY_SECRET_KEY to enable paid course checkout."
+    );
+  }
+
   razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_ID_KEY,
-    key_secret: process.env.RAZORPAY_SECRET_KEY,
+    key_id: RAZORPAY_ID_KEY,
+    key_secret: RAZORPAY_SECRET_KEY,
   });
-} catch (err) {
-  console.error("Razorpay init failed:", err.message);
-  process.exit(1);
-}
+
+  return razorpay;
+};
+
+const requireRazorpaySecret = () => {
+  if (!process.env.RAZORPAY_SECRET_KEY) {
+    throw new Error(
+      "Razorpay is not configured. Set RAZORPAY_SECRET_KEY to verify paid course payments."
+    );
+  }
+
+  return process.env.RAZORPAY_SECRET_KEY;
+};
 
 // create checkout session (order)
 export const createCheckoutSession = async (req, res) => {
@@ -88,7 +106,7 @@ export const createCheckoutSession = async (req, res) => {
       .toString()
       .slice(-6)}`.slice(0, 40);
 
-    const order = await razorpay.orders.create({
+    const order = await getRazorpayClient().orders.create({
       amount: amountInRupees,
       currency: "INR",
       receipt,
@@ -119,6 +137,9 @@ export const createCheckoutSession = async (req, res) => {
     });
   } catch (error) {
     console.error("createCheckoutSession:", error);
+    if (error.message.includes("Razorpay is not configured")) {
+      return res.status(503).json({ success: false, message: error.message });
+    }
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
@@ -135,8 +156,10 @@ export const verifyPayment = async (req, res) => {
     if (!userId)
       return res.status(401).json({ success: false, message: "Unauthorized" });
 
+    const razorpaySecretKey = requireRazorpaySecret();
+
     // verify signature
-    const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET_KEY);
+    const hmac = crypto.createHmac("sha256", razorpaySecretKey);
     hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
     const expected = hmac.digest("hex");
 
@@ -191,6 +214,9 @@ export const verifyPayment = async (req, res) => {
     }
   } catch (error) {
     console.error("verifyPayment:", error);
+    if (error.message.includes("Razorpay is not configured")) {
+      return res.status(503).json({ success: false, message: error.message });
+    }
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
