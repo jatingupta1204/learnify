@@ -1,9 +1,10 @@
 {
   "name": "learnify-root",
   "private": true,
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
-    "build": "cd client && npm install && npm run build"
+    "dev": "concurrently \"pnpm --dir server dev\" \"pnpm --dir client dev\"",
+    "build": "pnpm --dir client install --frozen-lockfile && pnpm --dir client build"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"

@@ -16,8 +16,9 @@ git checkout -b feature/my-feature
 
 - Follow project structure
 - Write clean and simple code
-- Add comments where useful
-- Do not commit .env or secrets
+- Use `pnpm` for installs and scripts
+- Copy `server/.env.example` and `client/.env.example` to local `.env` files
+- Do not commit `.env` or secrets
 
 ## 4. Commit
 

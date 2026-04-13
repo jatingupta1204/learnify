@@ -13,93 +13,99 @@ cd learnify
 
 ```
 cd server
-npm install
+pnpm install
 ```
 
 ### 3. Install frontend dependencies
 
 ```
 cd ../client
-npm install
+pnpm install
 ```
 
-### 4. Create server/.env
+### 4. Create local env files
+
+Copy the examples and fill in safe local values:
+
+```
+cp server/.env.example server/.env
+cp client/.env.example client/.env
+```
+
+### 5. Configure `server/.env`
 
 ```
 PORT=8000
-MONGO_URI=your_mongo_uri
-SECRET_KEY=your_secret
 CLIENT_URL=http://localhost:5173
-FRONTEND_URL=http://localhost:5173
-CLOUD_NAME=your_cloudinary
-API_KEY=your_key
-API_SECRET=your_secret
-RAZORPAY_ID_KEY=your_key
-RAZORPAY_SECRET_KEY=your_secret
-GOOGLE_CLIENT_ID=your_id
-GOOGLE_CLIENT_SECRET=your_secret
-GOOGLE_CALLBACK_URL=http://localhost:8000/auth/google/callback
+MONGO_URI=mongodb://localhost:27017/learnify
+SECRET_KEY=local-dev-secret
+CLOUD_NAME=
+API_KEY=
+API_SECRET=
+RAZORPAY_ID_KEY=
+RAZORPAY_SECRET_KEY=
+RAZORPAY_WEBHOOK_SECRET=
 ```
 
-### 5. Run backend
+### 6. Run backend
 
 ```
 cd server
-npm run dev
+pnpm dev
 ```
 
-### 6. Run frontend
+### 7. Run frontend
 
 ```
 cd client
-npm run dev
+pnpm dev
 ```
 
 Your local setup will run on:
 Backend → http://localhost:8000  
 Frontend → http://localhost:5173
 
+> Manual host dev requires MongoDB running locally at `mongodb://localhost:27017/learnify`.
+
 # 🐳 DOCKER SETUP
 
-### 1. Create server/.env.docker
+### 1. Create local env files
+
+Copy the example env files first:
 
 ```
-NODE_ENV=production
+cp server/.env.docker.example server/.env.docker
+cp client/.env.example client/.env
+```
+
+### 2. Configure `server/.env.docker`
+
+```
 PORT=8000
-MONGO_URI=your_mongo_uri
-SECRET_KEY=your_secret
-FRONTEND_URL=http://localhost:8000
-CLIENT_URL=http://localhost:8000
-CLOUD_NAME=your_cloudinary
-API_KEY=your_key
-API_SECRET=your_secret
-RAZORPAY_ID_KEY=your_key
-RAZORPAY_SECRET_KEY=your_secret
-GOOGLE_CLIENT_ID=your_id
-GOOGLE_CLIENT_SECRET=your_secret
-GOOGLE_CALLBACK_URL=http://localhost:8000/auth/google/callback
+CLIENT_URL=http://localhost:5173
+MONGO_URI=mongodb://mongo:27017/learnify
+SECRET_KEY=local-dev-secret
+CLOUD_NAME=
+API_KEY=
+API_SECRET=
+RAZORPAY_ID_KEY=
+RAZORPAY_SECRET_KEY=
+RAZORPAY_WEBHOOK_SECRET=
 ```
 
-### 2. Dockerfile (already included in repo)
-
-Multi‑stage build for frontend + backend.
-
-### 3. docker-compose.yml (already included)
-
-Runs everything in one container.
-
-### 4. Build and run
+### 3. Start the stack
 
 ```
-docker compose build --no-cache
-docker compose up
+docker compose -f infra/docker-compose.yml up --build
 ```
 
 App runs at:
-http://localhost:8000
+http://localhost:5173
 
-### 5. Stop containers
+> Docker setup includes MongoDB through the compose stack.
+
+### 4. Stop containers
 
 ```
-docker compose down
+docker compose -f infra/docker-compose.yml down
 ```

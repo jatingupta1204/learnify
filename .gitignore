@@ -5,6 +5,8 @@ node_modules/
 server/.env
 server/.env.docker
 server/.env.development
+client/.env
+infra/.env
 
 # Logs
 *.log

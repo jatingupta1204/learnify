@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
 import connectDB from "./utils/db.js";
 import userRoute from "./routes/user.routes.js";
@@ -47,12 +48,16 @@ app.use("/api/v1/purchase", coursePurchaseRoute);
 
 app.use("/api/v1/progress", courseProgressRoute);
 
-// Serve frontend build
+// Serve frontend build when available
 const frontendPath = path.join(__dirname, "../client/dist");
-app.use(express.static(frontendPath));
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(frontendPath, "index.html"));
-});
+const frontendIndexPath = path.join(frontendPath, "index.html");
+
+if (fs.existsSync(frontendIndexPath)) {
+  app.use(express.static(frontendPath));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(frontendPath, "index.html"));
+  });
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {

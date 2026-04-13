@@ -79,6 +79,8 @@ This project enables:
 
 ## Setup Guides
 
+- Manual dev: copy `server/.env.example` → `server/.env` and `client/.env.example` → `client/.env`, make sure MongoDB is running locally, then run the server and client dev commands separately
+- Docker dev: copy `server/.env.docker.example` → `server/.env.docker`, keep `client/.env`, and MongoDB comes from Docker via `docker compose -f infra/docker-compose.yml up --build`
 - Manual & Docker setup → [SETUP.md](./SETUP.md)
 - Contribution guide → [CONTRIBUTION.md](./CONTRIBUTION.md)
 

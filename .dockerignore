@@ -2,5 +2,10 @@ node_modules
 client/node_modules
 server/node_modules
 client/dist
+server/.env
+server/.env.docker
+client/.env
+client/.env.local
+server/.env.local
 
 .git

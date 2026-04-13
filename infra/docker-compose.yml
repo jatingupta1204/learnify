@@ -1,0 +1,43 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  server:
+    build:
+      context: ..
+      dockerfile: infra/docker/server.Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ../server/.env.docker
+    depends_on:
+      - mongo
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../server:/app/server
+      - server-node-modules:/app/server/node_modules
+
+  client:
+    build:
+      context: ..
+      dockerfile: infra/docker/client.Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ../client/.env
+    depends_on:
+      - server
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../client:/app/client
+      - client-node-modules:/app/client/node_modules
+
+volumes:
+  mongo-data:
+  server-node-modules:
+  client-node-modules:
