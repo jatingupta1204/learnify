@@ -34,6 +34,23 @@ cp client/.env.example client/.env
 
 ### 5. Configure `server/.env`
 
+Basic local boot needs MongoDB and a JWT secret. Cloudinary and Razorpay are only needed for the features below.
+
+| Variable | Use | Status | Notes |
+| --- | --- | --- | --- |
+| `PORT` | Backend port | Recommended | Defaults to `8000`. |
+| `CLIENT_URL` | Frontend origin for CORS/cookies | Recommended | Defaults to `http://localhost:5173`. |
+| `MONGO_URI` | MongoDB connection string | Required | Use `mongodb://localhost:27017/learnify` for manual dev. |
+| `SECRET_KEY` | JWT signing secret | Required for normal dev | App may start without it, but login/protected routes will fail. |
+| `CLOUD_NAME` | Cloudinary account name | Optional / feature-specific | Needed for media uploads. |
+| `API_KEY` | Cloudinary account API key | Optional / feature-specific | Get from your Cloudinary dashboard/account credentials. |
+| `API_SECRET` | Cloudinary account API secret | Optional / feature-specific | Get from your Cloudinary dashboard/account credentials. |
+| `RAZORPAY_ID_KEY` | Razorpay key id | Optional / feature-specific | Needed for paid checkout. Get from your Razorpay dashboard/account keys. |
+| `RAZORPAY_SECRET_KEY` | Razorpay secret key | Optional / feature-specific | Needed for payment verification. Get from your Razorpay dashboard/account keys. |
+| `RAZORPAY_WEBHOOK_SECRET` | Razorpay webhook secret | Optional / feature-specific | Only for webhook verification. |
+
+> Warning: current code initializes Razorpay when the payment controller loads, so invalid/missing Razorpay values may break startup in some runs. If you are not testing payments, use valid placeholders, stub the config, or avoid payment routes.
+
 ```
 PORT=8000
 CLIENT_URL=http://localhost:5173
@@ -79,6 +96,8 @@ cp client/.env.example client/.env
 ```
 
 ### 2. Configure `server/.env.docker`
+
+Use the same values as manual setup, but point MongoDB at Docker:
 
 ```
 PORT=8000
