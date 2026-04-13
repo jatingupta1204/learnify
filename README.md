@@ -3,10 +3,6 @@
 > A fully-featured, full-stack **learnify** app where users can register, log in, purchase courses, track progress, and instructors can manage courses and lectures.  
 > Built with ❤️ using **React.js**, **Node.js**, **Express.js**, and **MongoDB**.
 
-## 🔗 Live Demo: [https://learnify.vercel.app/](https://learnify.vercel.app/)
-
-## 🎥 Video Demo:[https://youtu.be/D29g4eM6nvM](https://youtu.be/D29g4eM6nvM)
-
 ---
 
 ## 🚀 Project Overview
@@ -20,8 +16,6 @@ This project enables:
 - Real-time Course Progress Tracking
 - Course Search & Filter Functionality
 - Responsive UI for Desktop & Mobile
-
-- [learnify-VideoDemo.webm](https://github.com/user-attachments/assets/2ffcfeaf-5e6c-49d3-99d3-f13eb036859b)
 
 ---
 
