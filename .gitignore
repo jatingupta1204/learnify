@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+
+# Backend environment files (DO NOT COMMIT SECRETS)
+server/.env
+server/.env.docker
+server/.env.development
+
+# Logs
+*.log
+logs/
+
+# Uploaded files (if any used)
+uploads/
+public/uploads/
+
+# Cache
+.cache/
+coverage/
+
+# IDE files
+.vscode/
+.idea/
+
+# Build artifacts (optional)
+dist/
