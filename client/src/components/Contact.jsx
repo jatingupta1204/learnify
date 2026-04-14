@@ -25,7 +25,7 @@ const Contact = () => {
         {/* Intro */}
         <div className="text-center mb-14 max-w-3xl mx-auto">
           <p className="text-gray-300 text-base sm:text-lg lg:text-xl leading-relaxed">
-            Hi 👋, I'm Aman Kumar, a Full-Stack Developer passionate about
+            Hi 👋, I'm Jatin Gupta, a Full-Stack Developer passionate about
             building modern web applications. Feel free to reach out for
             opportunities or collaborations.
           </p>
