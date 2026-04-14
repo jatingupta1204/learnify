@@ -31,7 +31,7 @@ const CourseTab = () => {
     courseTitle: "",
     subTitle: "",
     description: "",
-    category: "",
+    courseCategory: "",
     courseLevel: "",
     coursePrice: "",
     isPublished: false,
@@ -49,7 +49,7 @@ const CourseTab = () => {
             courseTitle,
             subTitle,
             description,
-            category,
+            courseCategory,
             courseLevel,
             coursePrice,
             isPublished,
@@ -59,7 +59,7 @@ const CourseTab = () => {
             courseTitle: courseTitle || "",
             subTitle: subTitle || "",
             description: description || "",
-            category: category || "",
+            courseCategory: courseCategory || "",
             courseLevel: courseLevel || "",
             coursePrice: coursePrice || "",
             isPublished: isPublished || false,
@@ -80,7 +80,7 @@ const CourseTab = () => {
   };
 
   const selectedCategory = (value) => {
-    setInput((prev) => ({ ...prev, category: value }));
+    setInput((prev) => ({ ...prev, courseCategory: value }));
   };
 
   const selectCourseLevel = (value) => {
@@ -199,7 +199,7 @@ const CourseTab = () => {
                   <Label className="mb-1.5">Category</Label>
                   <Select
                     onValueChange={selectedCategory}
-                    value={input.category}
+                    value={input.courseCategory}
                   >
                     <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                       <SelectValue placeholder="Select category" />
@@ -247,8 +247,8 @@ const CourseTab = () => {
                     <SelectContent className="bg-gray-800 text-white border-gray-700">
                       <SelectGroup>
                         <SelectItem value="Beginner">Beginner</SelectItem>
-                        <SelectItem value="Medium">Medium</SelectItem>
-                        <SelectItem value="Advance">Advance</SelectItem>
+                        <SelectItem value="Intermediate">Intermediate</SelectItem>
+                        <SelectItem value="Advanced">Advanced</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
