@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
-import upload from "../middlewares/multer.js";
+import { uploadImage } from "../middlewares/multer.js";
 import {
   createCourse,
   editCourse,
@@ -28,7 +28,7 @@ router.get("/getCourse/:courseId", isAuthenticated, getCourseById);
 router.put(
   "/editCourse/:courseId",
   isAuthenticated,
-  upload.single("courseThumbnail"),
+  uploadImage.single("courseThumbnail"),
   editCourse
 );
 router.delete("/deleteCourse/:courseId", isAuthenticated, deleteCourse);

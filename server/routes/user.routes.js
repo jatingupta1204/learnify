@@ -7,7 +7,7 @@ import {
   updateProfile,
 } from "../controllers/user.controllers.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
-import upload from "../middlewares/multer.js";
+import { uploadImage } from "../middlewares/multer.js";
 
 const router = express.Router();
 
@@ -19,7 +19,7 @@ router.get("/profile", isAuthenticated, getUserProfile);
 router.put(
   "/profile/update",
   isAuthenticated,
-  upload.single("profilePhoto"),
+  uploadImage.single("profilePhoto"),
   updateProfile
 );
 
