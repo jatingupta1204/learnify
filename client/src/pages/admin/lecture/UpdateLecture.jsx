@@ -108,7 +108,7 @@ const UpdateLecture = () => {
   const removeLectureHandler = async () => {
     try {
       const response = await axiosInstance.delete(
-        `/course/removeLecture/${lectureId}`
+        `/course/${courseId}/removeLecture/${lectureId}`
       );
       if (response.data.success) {
         toast.success("Lecture removed");

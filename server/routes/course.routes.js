@@ -40,7 +40,7 @@ router.put(
   isAuthenticated,
   updateLecture
 );
-router.delete("/removeLecture/:lectureId", isAuthenticated, removeLecture);
+router.delete("/:courseId/removeLecture/:lectureId", isAuthenticated, removeLecture);
 router.get("/getLectureById/:lectureId", isAuthenticated, getLectureById);
 
 router.put("/:courseId", isAuthenticated, togglePublicCourse);

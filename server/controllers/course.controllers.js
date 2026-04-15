@@ -327,7 +327,7 @@ export const updateLecture = async (req, res) => {
 
 export const removeLecture = async (req, res) => {
   try {
-    const { lectureId } = req.params;
+    const { courseId, lectureId } = req.params;
     const lecture = await Lecture.findById(lectureId);
     if (!lecture) {
       return res
@@ -339,6 +339,15 @@ export const removeLecture = async (req, res) => {
 
     if (lecture.publicId) {
       await deleteVideoFromCloudinary(lecture.publicId);
+    }
+
+    // Remove lecture ID from course's lectures array
+    const course = await Course.findById(courseId);
+    if (course) {
+      course.lectures = course.lectures.filter(
+        (id) => id.toString() !== lectureId
+      );
+      await course.save();
     }
 
     if (!deleted) {
