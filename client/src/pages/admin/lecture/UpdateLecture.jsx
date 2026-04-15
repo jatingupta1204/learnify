@@ -18,6 +18,8 @@ const UpdateLecture = () => {
   const [mediaProgress, setMediaProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [videoType, setVideoType] = useState("upload"); // "upload" or "youtube"
+  const [youtubeUrl, setYoutubeUrl] = useState("");
 
   const { courseId, lectureId } = useParams();
   const navigate = useNavigate();
@@ -34,11 +36,23 @@ const UpdateLecture = () => {
           setTitle(lec.lectureTitle || "");
           setIsFree(lec.isPreviewFree || false);
           if (lec.videoUrl) {
-            setFileName(lec.videoUrl.split("/").pop());
-            setUploadVideoInfo({
-              videoUrl: lec.videoUrl,
-              publicId: lec.publicId,
-            });
+            // Check if it's a YouTube URL
+            if (lec.videoUrl.includes("youtube.com") || lec.videoUrl.includes("youtu.be")) {
+              setVideoType("youtube");
+              setYoutubeUrl(lec.videoUrl);
+              setFileName("YouTube Video");
+              setUploadVideoInfo({
+                videoUrl: lec.videoUrl,
+              });
+            } else {
+              // It's an uploaded video
+              setVideoType("upload");
+              setFileName(lec.videoUrl.split("/").pop());
+              setUploadVideoInfo({
+                videoUrl: lec.videoUrl,
+                publicId: lec.publicId,
+              });
+            }
           }
         } else {
           toast.error("Lecture not found");
@@ -109,9 +123,33 @@ const UpdateLecture = () => {
   // Update lecture
   const updateLectureHandler = async (e) => {
     e.preventDefault();
-    if (!title || !uploadVideoInfo) {
-      toast.error("Title and video are required");
+    if (!title) {
+      toast.error("Title is required");
       return;
+    }
+
+    let videoInfo = null;
+    if (videoType === "upload" && !uploadVideoInfo) {
+      toast.error("Please upload a video file");
+      return;
+    }
+    if (videoType === "youtube" && !youtubeUrl.trim()) {
+      toast.error("Please enter a YouTube URL");
+      return;
+    }
+
+    if (videoType === "youtube") {
+      // Validate YouTube URL
+      const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[a-zA-Z0-9_-]{11}/;
+      if (!youtubeRegex.test(youtubeUrl.trim())) {
+        toast.error("Please enter a valid YouTube URL");
+        return;
+      }
+      videoInfo = {
+        videoUrl: youtubeUrl.trim(),
+      };
+    } else {
+      videoInfo = uploadVideoInfo;
     }
 
     setLoading(true);
@@ -119,7 +157,7 @@ const UpdateLecture = () => {
       const payload = {
         lectureTitle: title,
         isPreviewFree: isFree,
-        videoInfo: uploadVideoInfo,
+        videoInfo: videoInfo,
       };
 
       const response = await axiosInstance.put(
@@ -183,21 +221,62 @@ const UpdateLecture = () => {
             <Label htmlFor="video">
               Video <span className="text-red-400">*</span>
             </Label>
-            <div className="flex flex-col sm:flex-row items-center gap-3 mt-2">
-              <label className="flex items-center gap-2 px-4 py-2 bg-gray-700 border border-gray-600 rounded-md cursor-pointer hover:bg-gray-600">
-                <span className="">Choose File</span>
-                <Input
-                  id="video"
-                  type="file"
-                  accept="video/*"
-                  className="hidden"
-                  onChange={fileChangeHandler}
+
+            {/* Video Type Selection */}
+            <div className="flex gap-4 mt-2 mb-3">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="videoType"
+                  value="upload"
+                  checked={videoType === "upload"}
+                  onChange={(e) => setVideoType(e.target.value)}
                 />
+                <span>Upload Video</span>
               </label>
-              <span className="text-sm text-gray-300">
-                {fileName || "No file chosen"}
-              </span>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="videoType"
+                  value="youtube"
+                  checked={videoType === "youtube"}
+                  onChange={(e) => setVideoType(e.target.value)}
+                />
+                <span>YouTube Link</span>
+              </label>
             </div>
+
+            {/* Conditional Video Input */}
+            {videoType === "upload" ? (
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <label className="flex items-center gap-2 px-4 py-2 bg-gray-700 border border-gray-600 rounded-md cursor-pointer hover:bg-gray-600">
+                  <span className="">Choose File</span>
+                  <Input
+                    id="video"
+                    type="file"
+                    accept="video/*"
+                    className="hidden"
+                    onChange={fileChangeHandler}
+                  />
+                </label>
+                <span className="text-sm text-gray-300">
+                  {fileName || "No file chosen"}
+                </span>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <Input
+                  type="url"
+                  placeholder="Enter YouTube URL (e.g., https://www.youtube.com/watch?v=...)"
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  className="mt-1"
+                />
+                <p className="text-xs text-gray-400">
+                  Enter a valid YouTube URL. The video will be embedded directly.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Free Switch */}
